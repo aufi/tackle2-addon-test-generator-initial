@@ -23,12 +23,17 @@ RUN microdnf -y install \
   git \
   subversion \
   maven \
+  python39 \
+  python39-toml \
+  python39-wheel \
  && microdnf -y clean all
 ARG TESTGEN=https://github.com/konveyor/tackle-test-generator-cli/releases/download/v2.4.0/tackle-test-generator-cli-v2.4.0-all-deps.zip
-#RUN wget -qO /opt/windup.zip $TESTGEN \
-# && unzip /opt/windup.zip -d /opt \
-# && rm /opt/windup.zip \
-# && ln -s /opt/tackle-cli-6.0.0.Final/bin/windup-cli /opt/windup
+RUN wget -qO /opt/tackle-test-generator-cli.zip $TESTGEN \
+ && unzip /opt/tackle-test-generator-cli.zip -d /opt \
+ && rm /opt/tackle-test-generator-cli.zip
+#RUN cd /opt/tackle-test-generator-cli &&  python3 setup.py --help && python3 setup.py install && tkltest-unit
+RUN cd /opt/tackle-test-generator-cli && python3 -m venv venv && source venv/bin/activate && pip install --editable . && tkltest-unit
+RUN cd /opt/tackle-test-generator-cli && python3 -m venv venv && source venv/bin/activate && tkltest-unit --help
 #ENV HOME=/working \
 #    JAVA_HOME="/usr/lib/jvm/jre-11" \
 #    JAVA_VENDOR="openjdk" \
